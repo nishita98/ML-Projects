@@ -1,3 +1,6 @@
+# This study aims to find out the effect of texting whilst driving based on their driving quality.
+# Data was recorded for 32 participants in a driving simulator environment without (control condition) or with (texting condition) a secondary task of texting whilst driving.
+
 #setting the working directory
 setwd("~/R/QDA_2021")
 
@@ -52,15 +55,45 @@ hist (control, xlab="Driving Scores", main="Driving Quality scores for text (gre
 hist (text, breaks=seq(0,8,1), col=rgb(0,1,0,1/3), add=TRUE)
 
 #running Shapiro Wilk test to check if the subsets driving scores are normal enough to perform t-test or not
-shapiro.test (control)
-shapiro.test (text)
+> shapiro.test (control)
+#OUTPUT#
+	Shapiro-Wilk normality test
 
-#using car package to run the levene test before t-test to check homogeneity of variance
-library ('car')
-leveneTest(driving$score, driving$condition)
+data:  control
+W = 0.95842, p-value = 0.6332
 
-#running independent t-test between control and text conditions
-t.test (control, text, paired=FALSE)
+> shapiro.test (text)
+
+	Shapiro-Wilk normality test
+
+data:  text
+W = 0.96804, p-value = 0.806
+
+> 
+> #using car package to run the levene test before t-test to check homogeneity of variance
+> library ('car')
+Loading required package: carData
+Warning message:
+package ‘car’ was built under R version 4.1.3 
+> leveneTest(driving$score, driving$condition)
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  1  0.9755 0.3312
+      30               
+> 
+> #running independent t-test between control and text conditions
+> t.test (control, text, paired=FALSE)
+#OUTPUT#
+	Welch Two Sample t-test
+
+data:  control and text
+t = 2.673, df = 28.564, p-value = 0.01229
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.3236936 2.4388064
+sample estimates:
+mean of x mean of y 
+ 5.138125  3.756875 
 
 #To create a bar plot to visualize the data storing mean and sd for both conditions respectively
 driving.mean = c( mean(control), mean(text) )
@@ -87,6 +120,3 @@ br = barplot (driving.mean, main = "Graph of Condition Means", xlab= "Driving Co
 #make a call to error bar function
 se.bar(br,driving.mean,driving.sd,16, col="red", lwd=2)
 legend("topright", c("Control","Texting"),fill=c("orange","green"),density=60)
-
-
-
